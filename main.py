@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-Vič Job Tracker — ежедневный скрапер вакансий Kariera.si.
+Slovenia Job Tracker — ежедневный скрапер вакансий Kariera.si.
 
 Что делает при каждом запуске:
+  1. Скачивает страницу со списком всех вакансий на Kariera.si.
+  2. Для каждой ещё не проверенной вакансии открывает её страницу и читает
+     поля «Kraj dela» (город), «Regija», даты и полный текст.
+  3. Оставляет только вакансии в зоне LPP (см. CITY_FILTER).
+  4. Отбрасывает вакансии, в тексте которых встретилось хотя бы одно
+     стоп-слово (см. KEYWORD_EXCLUDE) — не требующее квалификации,
+     без ночных/ранних/поздних смен, без запроса продвинутого словенского,
+     полная занятость, физически не тяжёлая. Философия: лучше пропустить
+     вакансию, которая не совсем подходит, чем отсеять подходящую —
+     поэтому исключаем только по явным, однозначным сигналам в тексте.
+  5. Сохраняет всё в data/jobs.json (для дедупликации между запусками) и
+     новые вакансии в data/new_jobs.json (их шлёт в Telegram notify.py).
 
-1. Скачивает страницу со списком всех вакансий на Kariera.si.
-2. Для каждой ещё не проверенной вакансии открывает её страницу и читает поля
-   «Kraj dela» (город), «Regija», даты и полный текст.
-3. Оставляет только вакансии с городом Ljubljana (см. CITY_FILTER).
-4. Отмечает вакансии, в тексте которых встречается район/улица рядом с Vič
-   (см. VIC_KEYWORDS), и по возможности геокодирует их точнее.
-5. Сохраняет всё в data/jobs.json (для карты) и новые вакансии в
-   data/new_jobs.json (для Telegram-дайджеста, его шлёт notify.py).
-
-ОГРАНИЧЕНИЕ ПО ДАННЫМ: портал показывает локацию на уровне города
-(«Ljubljana»), без адреса работодателя. Поэтому точный пин на карте возможен
-только там, где район/улица упомянуты в самом тексте вакансии.
-Подробнее — README.md.
+Карты больше нет — координаты и геокодинг из проекта убраны.
 """
 import json
 import re
@@ -32,22 +32,51 @@ from bs4 import BeautifulSoup
 # ---------------------------------------------------------------------------
 # НАСТРОЙКИ — это единственное место, которое обычно нужно править
 # ---------------------------------------------------------------------------
-CITY_FILTER = "ljubljana"
 
-VIC_KEYWORDS = [
-    "vič",
-    "rožna dolina",
-    "brdo",
-    "dolgi most",
-    "tržaška cesta",
+CITY_FILTER = [
+    "ljubljana",
+    "medvode",
+    "brezovica",
+    "dobrova",
+    "škofljica",
+    "skofljica",
+    "beričevo",
+    "bericevo",
+    "dragomelj",
+]
+
+KEYWORD_EXCLUDE = [
+    "univerzitetna izobrazba",
+    "visokošolska izobrazba",
+    "visoka strokovna izobrazba",
+    "univerzitetna diploma",
+    "magisterij",
+    "doktorat",
+    "vii. stopnja",
+    "nočna izmena",
+    "nočno delo",
+    "delo ponoči",
+    "zgodnja izmena",
+    "pozna izmena",
+    "odlično znanje slovenščine",
+    "tekoče znanje slovenščine",
+    "materni jezik",
+    "skrajšan delovni čas",
+    "polovični delovni čas",
+    "študentsko delo",
+    "delo prek napotnice",
+    "sezonsko delo",
+    "fizično zahtevno delo",
+    "fizično naporno delo",
+    "dvigovanje težkih bremen",
+    "težko fizično delo",
 ]
 
 KEYWORD_INCLUDE: list[str] = []
-KEYWORD_EXCLUDE: list[str] = []
 
 REQUEST_PAUSE_SEC = 1.0
-# ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
 BASE_URL = "https://www.kariera.si"
 LIST_URL = f"{BASE_URL}/sl/delovna-mesta"
 
@@ -63,11 +92,6 @@ HEADERS = {
     ),
     "Accept-Language": "sl,en;q=0.8",
 }
-
-LJUBLJANA_CENTER = (46.0569, 14.5058)
-VIC_CENTER = (46.0447, 14.4681)
-
-STREET_RE = re.compile(r"([A-ZČŠŽ][a-zčšž]+(?:\s[A-ZČŠŽa-zčšž]+)?\s(?:cesta|ulica|trg)\s?\d{0,3}[a-z]?)")
 
 
 def fetch(url: str) -> str:
@@ -101,9 +125,16 @@ def parse_detail(url: str) -> dict:
     h1 = soup.find("h1")
     title = h1.get_text(" ", strip=True) if h1 else ""
 
+    # Если поле на странице пустое, за меткой сразу идёт метка следующего поля
+    # (например «Kraj dela» → «Datum objave»). Такое значение — не значение.
+    labels = {"Regija", "Kraj dela", "Datum objave", "Rok prijave"}
+
     def field(label: str) -> str:
         m = re.search(rf"^{re.escape(label)}\s*:?\s*\n+([^\n]+)", main_text, re.MULTILINE)
-        return m.group(1).strip() if m else ""
+        if not m:
+            return ""
+        value = m.group(1).strip()
+        return "" if value in labels else value
 
     return {
         "title": title,
@@ -115,31 +146,9 @@ def parse_detail(url: str) -> dict:
     }
 
 
-def geocode(query: str):
-    try:
-        r = requests.get(
-            "https://nominatim.openstreetmap.org/search",
-            params={"q": query, "format": "json", "limit": 1, "countrycodes": "si"},
-            headers={"User-Agent": "VicJobTracker/1.0 (personal, non-commercial)"},
-            timeout=15,
-        )
-        r.raise_for_status()
-        results = r.json()
-        if results:
-            return float(results[0]["lat"]), float(results[0]["lon"])
-    except Exception as e:
-        print(f"  геокодинг «{query}» не удался: {e}", file=sys.stderr)
-    return None
-
-
-# Ищем ключевые слова только как отдельные слова: простое вхождение "vič"
-# срабатывает внутри обычных слов вроде "sendvičev" или фамилий на -vič.
-VIC_PATTERNS = [re.compile(rf"(?<!\w){re.escape(kw)}(?!\w)") for kw in VIC_KEYWORDS]
-
-
-def is_in_vic(full_text: str, kraj: str) -> bool:
-    haystack = f"{kraj}\n{full_text}".lower()
-    return any(p.search(haystack) for p in VIC_PATTERNS)
+def matches_city(kraj: str) -> bool:
+    k = kraj.lower()
+    return any(city in k for city in CITY_FILTER)
 
 
 def matches_keywords(full_text: str) -> bool:
@@ -188,6 +197,7 @@ def run():
     new_jobs = []
     checked = 0
     empty_kraj = 0
+    excluded_by_keyword = 0
 
     for job_id, url in to_check:
         time.sleep(REQUEST_PAUSE_SEC)
@@ -204,21 +214,11 @@ def run():
             empty_kraj += 1
             continue
 
-        if CITY_FILTER not in kraj.lower():
+        if not matches_city(kraj):
             continue
         if not matches_keywords(detail["full_text"]):
+            excluded_by_keyword += 1
             continue
-
-        in_vic = is_in_vic(detail["full_text"], kraj)
-        approx = True
-        coords = VIC_CENTER if in_vic else LJUBLJANA_CENTER
-
-        if in_vic:
-            street = STREET_RE.search(detail["full_text"])
-            if street:
-                geo = geocode(f"{street.group(1)}, Ljubljana, Slovenia")
-                if geo:
-                    coords, approx = geo, False
 
         record = {
             "id": job_id,
@@ -228,16 +228,12 @@ def run():
             "regija": detail["regija"],
             "datum_objave": detail["datum_objave"],
             "rok_prijave": detail["rok_prijave"],
-            "in_vic": in_vic,
-            "lat": coords[0],
-            "lon": coords[1],
-            "approx": approx,
             "active": True,
             "first_seen": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         }
         store["jobs"][job_id] = record
         new_jobs.append(record)
-        print(f"  + {'[Vič] ' if in_vic else ''}{record['title']} — {kraj}")
+        print(f"  + {record['title']} — {kraj}")
 
     for jid, job in store["jobs"].items():
         job["active"] = jid in current_ids
@@ -256,11 +252,12 @@ def run():
     now = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     active_total = sum(1 for j in store["jobs"].values() if j["active"])
     LAST_RUN_FILE.write_text(
-        f"{now}\nпроверено новых: {checked}, подошло: {len(new_jobs)}, активных на карте: {active_total}\n",
+        f"{now}\nпроверено новых: {checked}, отброшено по стоп-словам: {excluded_by_keyword}, "
+        f"подошло: {len(new_jobs)}, активных всего: {active_total}\n",
         encoding="utf-8",
     )
     print(f"Итог: новых подходящих вакансий {len(new_jobs)} "
-          f"(из них рядом с Vič: {sum(j['in_vic'] for j in new_jobs)}); активных на карте: {active_total}")
+          f"(отброшено по стоп-словам: {excluded_by_keyword}); активных всего: {active_total}")
 
 
 if __name__ == "__main__":

@@ -49,10 +49,8 @@ def chunks(lines: list[str], limit: int = TELEGRAM_LIMIT):
 
 def format_job(j: dict) -> str:
     title = html.escape(j.get("title") or "(без названия)")
-    kraj = j.get("kraj") or ""
-    place = f" · {html.escape(kraj)}" if kraj.lower() != "ljubljana" else ""
-    mark = "📍 <b>Vič</b>" if j.get("in_vic") else "•"
-    return f'{mark} <a href="{j["url"]}">{title}</a>{place}'
+    kraj = html.escape(j.get("kraj") or "")
+    return f'• <a href="{j["url"]}">{title}</a> · {kraj}'
 
 
 def main():
@@ -70,20 +68,12 @@ def main():
 
     if not jobs:
         if SEND_WHEN_EMPTY:
-            send("Сегодня новых вакансий по Любляне нет.")
+            send("Сегодня новых подходящих вакансий нет.")
         print("Новых вакансий нет.")
         return
 
-    vic = [j for j in jobs if j.get("in_vic")]
-    rest = [j for j in jobs if not j.get("in_vic")]
-
-    lines = [f"<b>Новые вакансии по Любляне: {len(jobs)}</b>"]
-    if vic:
-        lines.append(f"\nРядом с Vič ({len(vic)}):")
-        lines += [format_job(j) for j in vic]
-    if rest:
-        lines.append(f"\nОстальная Любляна ({len(rest)}):")
-        lines += [format_job(j) for j in rest]
+    lines = [f"<b>Новые вакансии: {len(jobs)}</b>", ""]
+    lines += [format_job(j) for j in jobs]
 
     for part in chunks(lines):
         send(part)
