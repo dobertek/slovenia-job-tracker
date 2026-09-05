@@ -91,20 +91,31 @@ TITLE_EXCLUDE = [
     "učitelj", "vzgojitelj", "profesor", "socialni delavec",
     "inženir", "arhitekt", "pravnik", "odvetnik", "računovodja", "psiholog",
     "ekonomist", "programer", "revizor", "notar", "razvijalec",
-    "vodja", "direktor", "poslovodja",
-    "mehanik", "viličar", "varilec", "električar", "vodovodar", "zidar",
+    "vodj", "direktor", "poslovodja",
+    "mehanik", "viličar", "varilec", "električar", "elektrikar", "vodovodar", "zidar",
     "tesar", "ključavničar", "krovec",
     "frizer", "kozmetičarka", "maser",
     "gradbeni delavec", "kopač", "nakladalec",
     "varnostnik", "gasilec", "dimnikar", "rudar",
-    "voznik tovornjaka", "poklicni voznik c",
+    "voznik tovornjaka", "voznik tovornega vozila", "poklicni voznik c",
 ]
 
 # Если в названии есть одно из этих слов, TITLE_EXCLUDE не применяется вовсе:
 # «Pomočnik mehanika» — не механик, а подсобник, и должен пройти.
-# «pripravnik» здесь ещё и лечит ложное срабатывание: слово «pravnik» входит
-# в «pripravnik» как подстрока, из-за чего стажёр срезался как юрист.
-TITLE_EXCLUDE_GUARD = ["pomočnik", "pomočnica", "asistent", "pripravnik"]
+TITLE_EXCLUDE_GUARD = ["pomočnik", "pomočnica", "asistent"]
+
+# Точечная защита от ложных вхождений: слово-маска гасит конкретное стоп-слово
+# и только его, остальной список в этом же названии продолжает работать.
+# «pripravnik» содержит «pravnik» подстрокой, но стажёр — не юрист; при этом
+# «Srednja medicinska sestra … - pripravnik» обязана срезаться по
+# «medicinska sestra», поэтому глушить весь заголовок целиком нельзя.
+TITLE_EXCLUDE_MASKS = {"pravnik": ["pripravnik"]}
+
+# Эти стоп-слова совпадают только с начала слова. Для «inženir» подстрочный
+# матч ничего не спасает и лишь ловит название сферы деятельности внутри
+# другого слова («Proizvodni tehnolog – elektroinženirstvo»). Для остальных
+# подстрока, наоборот, полезна: она ловит avtomehanik, delovodja, skupinovodja.
+TITLE_EXCLUDE_WORD_START = {"inženir"}
 
 # Максимальная ступень образования, которая ещё подходит (V).
 MAX_STOPNJA = 5
@@ -559,7 +570,16 @@ def matches_title(title: str) -> bool:
     t = (title or "").lower()
     if any(g in t for g in TITLE_EXCLUDE_GUARD):
         return True
-    return not any(k in t for k in TITLE_EXCLUDE)
+    for key in TITLE_EXCLUDE:
+        haystack = t
+        for mask in TITLE_EXCLUDE_MASKS.get(key, ()):
+            haystack = haystack.replace(mask, " ")
+        if key in TITLE_EXCLUDE_WORD_START:
+            if re.search(rf"(?<![0-9a-zčšžćđ]){re.escape(key)}", haystack):
+                return False
+        elif key in haystack:
+            return False
+    return True
 
 
 def matches_education(stopnja) -> bool:
