@@ -4,6 +4,7 @@ import html
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 import requests
@@ -17,19 +18,35 @@ CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "").strip()
 
 TELEGRAM_LIMIT = 3800
 
+# Telegram пропускает в один чат примерно 20 сообщений в минуту. Дайджест из
+# двух источников бывает и на несколько десятков сообщений, поэтому держим
+# паузу между ними и уважаем retry_after, если всё же упёрлись в лимит.
+SEND_PAUSE_SEC = 3.0
+
 
 def send(text: str):
-    r = requests.post(
-        f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-        json={
-            "chat_id": CHAT_ID,
-            "text": text,
-            "parse_mode": "HTML",
-            "disable_web_page_preview": True,
-        },
-        timeout=20,
-    )
-    if not r.ok:
+    for attempt in (1, 2):
+        r = requests.post(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+            json={
+                "chat_id": CHAT_ID,
+                "text": text,
+                "parse_mode": "HTML",
+                "disable_web_page_preview": True,
+            },
+            timeout=20,
+        )
+        if r.ok:
+            return
+        if r.status_code == 429 and attempt == 1:
+            wait = 5
+            try:
+                wait = int(r.json()["parameters"]["retry_after"])
+            except Exception:
+                pass
+            print(f"Telegram просит подождать {wait} c, жду и пробую ещё раз.", file=sys.stderr)
+            time.sleep(wait + 1)
+            continue
         print(f"Telegram вернул ошибку {r.status_code}: {r.text}", file=sys.stderr)
         r.raise_for_status()
 
@@ -47,10 +64,15 @@ def chunks(lines: list[str], limit: int = TELEGRAM_LIMIT):
         yield "\n".join(buf)
 
 
+SOURCE_LABELS = {"kariera": "Kariera", "mojedelo": "MojeDelo"}
+
+
 def format_job(j: dict) -> str:
     title = html.escape(j.get("title") or "(без названия)")
     kraj = html.escape(j.get("kraj") or "")
-    return f'• <a href="{j["url"]}">{title}</a> · {kraj}'
+    source = SOURCE_LABELS.get(j.get("source"), j.get("source") or "")
+    tag = f"[{html.escape(source)}] " if source else ""
+    return f'• {tag}<a href="{j["url"]}">{title}</a> · {kraj}'
 
 
 def main():
@@ -75,7 +97,9 @@ def main():
     lines = [f"<b>Новые вакансии: {len(jobs)}</b>", ""]
     lines += [format_job(j) for j in jobs]
 
-    for part in chunks(lines):
+    for n, part in enumerate(chunks(lines)):
+        if n:
+            time.sleep(SEND_PAUSE_SEC)
         send(part)
     print(f"Отправлено: {len(jobs)} вакансий.")
 
