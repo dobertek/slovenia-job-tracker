@@ -62,7 +62,6 @@ KEYWORD_EXCLUDE = [
     "univerzitetna diploma",
     "magisterij",
     "doktorat",
-    "vii. stopnja",
     "nočna izmena",
     "nočno delo",
     "delo ponoči",
@@ -83,6 +82,32 @@ KEYWORD_EXCLUDE = [
 ]
 
 KEYWORD_INCLUDE: list[str] = []
+
+# Стоп-лист по НАЗВАНИЮ вакансии (не по всему тексту): профессии, которые
+# требуют своей квалификации или лицензии. Регистронезависимо, по вхождению.
+TITLE_EXCLUDE = [
+    "zdravnik", "zobozdravnik", "farmacevt", "veterinar", "medicinska sestra",
+    "fizioterapevt", "babica", "psihiater",
+    "učitelj", "vzgojitelj", "profesor", "socialni delavec",
+    "inženir", "arhitekt", "pravnik", "odvetnik", "računovodja", "psiholog",
+    "ekonomist", "programer", "revizor", "notar", "razvijalec",
+    "vodja", "direktor", "poslovodja",
+    "mehanik", "viličar", "varilec", "električar", "vodovodar", "zidar",
+    "tesar", "ključavničar", "krovec",
+    "frizer", "kozmetičarka", "maser",
+    "gradbeni delavec", "kopač", "nakladalec",
+    "varnostnik", "gasilec", "dimnikar", "rudar",
+    "voznik tovornjaka", "poklicni voznik c",
+]
+
+# Если в названии есть одно из этих слов, TITLE_EXCLUDE не применяется вовсе:
+# «Pomočnik mehanika» — не механик, а подсобник, и должен пройти.
+# «pripravnik» здесь ещё и лечит ложное срабатывание: слово «pravnik» входит
+# в «pripravnik» как подстрока, из-за чего стажёр срезался как юрист.
+TITLE_EXCLUDE_GUARD = ["pomočnik", "pomočnica", "asistent", "pripravnik"]
+
+# Максимальная ступень образования, которая ещё подходит (V).
+MAX_STOPNJA = 5
 
 # Пауза между запросами, отдельно для каждого источника. Kariera.si — обычные
 # HTML-страницы, MojeDelo.com — их JSON API, который заметно легче.
@@ -120,6 +145,172 @@ def html_to_text(html: str) -> str:
     if not html:
         return ""
     return BeautifulSoup(html, "html.parser").get_text("\n", strip=True)
+
+
+# ---------------------------------------------------------------------------
+# Ступень образования (stopnja izobrazbe)
+# ---------------------------------------------------------------------------
+ROMAN = {"I":1,"II":2,"III":3,"IV":4,"V":5,"VI":6,"VII":7,"VIII":8,"IX":9}
+_R = r"(?:VIII|VII|VI|V|IV|III|II|I)"
+_TOKEN = rf"(?:{_R}|[1-9])\s*(?:[./]\s*[12])?\s*\.?"
+_SEP = r"\s*(?:ali|in|oz\.?|do|/|–|-|,)?\s*"
+STOPNJA_RE = re.compile(rf"((?:{_TOKEN}{_SEP})+)stopnj", re.MULTILINE)
+_NUM_RE = re.compile(rf"({_R}|[1-9])\s*(?:([./])\s*([12]))?")
+
+def parse_stopnja(text: str):
+    best = None
+    for m in STOPNJA_RE.finditer(text):
+        for nm in _NUM_RE.finditer(m.group(1)):
+            major = ROMAN.get(nm.group(1)) if nm.group(1) in ROMAN else int(nm.group(1))
+            if major is None or not (1 <= major <= 9):
+                continue
+            val = major + (int(nm.group(3)) / 10 if nm.group(3) else 0)
+            best = val if best is None else min(best, val)
+    return best
+
+
+# ---------------------------------------------------------------------------
+# Короткие детали для дайджеста: зарплата, сменность, категория прав
+# ---------------------------------------------------------------------------
+_AMOUNT = r"(\d{1,3}(?:[.\s]\d{3})+(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)\s*€"
+_SALARY_WORD = re.compile(r"plač|bruto|neto|zaslužek|osnovn|mesečn", re.I)
+# «prevoza» сознательно нет: километраж отсекается порогом суммы, а слово
+# «prevoz na delo» стоит рядом с настоящей зарплатой и убивало бы её.
+_NOT_SALARY = re.compile(r"malic|prehran|kilometr|regres|božičnic|jubilej|nagrad|bonus|bonitet|"
+                         r"štipendij|odpravnin|pokojninsk|zavarovanj|dodatek za|udeležb|"
+                         r"letn|za leto|leta 20", re.I)
+# Границы фразы. Двоеточие границей НЕ считается: оно как раз вводит сумму
+# («Plačilo: Plača 13 €/h»), а вот «Regres za dopust : … 2.496 € (neto)»
+# должно остаться одной фразой, иначе regres перестаёт дисквалифицировать.
+# Точка внутри числа («18.000») — не конец предложения.
+_CLAUSE_END_RE = re.compile(r"[,;!?\n]|(?<!\d)\.|\.(?!\d)")
+
+
+def _clause(t, start, end):
+    left = t[max(0, start - 130): start]
+    bounds = [m.end() for m in _CLAUSE_END_RE.finditer(left)]
+    right = t[end: end + 70]
+    nxt = _CLAUSE_END_RE.search(right)
+    return left[bounds[-1] if bounds else 0:] + t[start:end] + right[: nxt.start() if nxt else len(right)]
+_HOURLY = re.compile(r"€\s*/?\s*(?:h\b|uro|uri)", re.I)
+
+def _num(s):
+    s = s.replace(" ", "")
+    if "," in s:
+        s = s.replace(".", "").replace(",", ".")
+    elif re.match(r"^\d{1,3}(\.\d{3})+$", s):
+        s = s.replace(".", "")
+    try: return float(s)
+    except ValueError: return None
+
+def _fmt(v):
+    return f"{int(round(v)):,}".replace(",", ".") if v >= 1000 else f"{v:g}".replace(".", ",")
+
+def find_salary(text: str):
+    """Зарплата из текста. Суммы про malica/kilometrino/regres не считаются."""
+    t = re.sub(r"\s+", " ", text or "")
+    found = []
+    for m in re.finditer(_AMOUNT, t):
+        # И слово о зарплате, и дисквалификаторы ищем в пределах одной фразы.
+        # Иначе «letni bonus v višini 1.600 € (…), plačan prost dan» проходит
+        # как зарплата, а «Regres … 2.496 € (neto)» — по слову «neto».
+        clause = _clause(t, m.start(), m.end())
+        if not _SALARY_WORD.search(clause) or _NOT_SALARY.search(clause):
+            continue
+        v = _num(m.group(1))
+        if v is None:
+            continue
+        hourly = bool(_HOURLY.match(t[m.end() - 1: m.end() + 6]))
+        if hourly and 4 <= v <= 100:
+            found.append((v, True, m.start(), m.end()))
+        elif not hourly and 500 <= v <= 100000:
+            found.append((v, False, m.start(), m.end()))
+    if not found:
+        return ""
+    lo = min(found, key=lambda f: f[0])
+    # диапазон: две суммы рядом, соединённые тире или «do»
+    for a in found:
+        for b in found:
+            if a[0] < b[0] and a[1] == b[1] and 0 < b[2] - a[3] <= 12 and \
+               re.fullmatch(r"[\s\-–—]*(?:do)?[\s\-–—]*", t[a[3]:b[2]]):
+                unit = " €/h" if a[1] else " €"
+                return f"{_fmt(a[0])}–{_fmt(b[0])}{unit}"
+    return f"{_fmt(lo[0])}{' €/h' if lo[1] else ' €'}"
+
+_SHIFT_PATTERNS = [
+    (re.compile(r"enoizmensk|\b1[\s-]*izmensk|\beni izmeni\b|\benoizmenski\b", re.I), "1 izmena"),
+    (re.compile(r"dvoizmensk|\bdveh izmenah\b|\bdve izmeni\b|\b2[\s-]*izmen", re.I), "2 izmeni"),
+    (re.compile(r"triizmensk|troizmensk|\btreh izmenah\b|\b3[\s-]*izmen", re.I), "3 izmene"),
+    (re.compile(r"večizmensk|\bveč izmenah\b", re.I), "večizmensko"),
+]
+
+def find_shift(text: str):
+    t = re.sub(r"izmenjav\w*", " ", re.sub(r"\s+", " ", text or ""), flags=re.I)
+    for rx, label in _SHIFT_PATTERNS:
+        if rx.search(t):
+            return label
+    return ""
+
+# Буква категории не должна быть хвостом предыдущего слова: без этого
+# «vozniško dovoljenje (kategorija B)» отдавало «E» — конечную букву слова
+# «dovoljenje», куда regex откатывался.
+_NOT_LETTER = r"(?<![a-zA-ZčšžćđČŠŽĆĐ])"
+_LICENSE = re.compile(
+    rf"(?:vozniš\w*\s+dovoljenj\w*|izpit\w*)\s*(?:za\s+)?(?:kategorij\w*\s*)?\(?\s*{_NOT_LETTER}([A-E])\b\s*(\+?\s*E\b)?"
+    rf"|kategorij[ae]?\s*\(?\s*{_NOT_LETTER}([A-E])\b\s*(\+?\s*E\b)?", re.I)
+
+def find_license(text: str):
+    t = re.sub(r"\s+", " ", text or "")
+    m = _LICENSE.search(t)
+    if not m:
+        return ""
+    cat = (m.group(1) or m.group(3) or "").upper()
+    plus = (m.group(2) or m.group(4) or "").replace(" ", "").upper()
+    return f"kat. {cat}{plus}" if cat else ""
+
+
+# ---------------------------------------------------------------------------
+# Сфера деятельности — по заголовку. Категории подобраны по реальному
+# распределению заголовков, а не наугад: первое совпадение выигрывает,
+# поэтому более узкие категории стоят выше более широких.
+# ---------------------------------------------------------------------------
+CATEGORIES = [
+    ("Zdravstvo in nega", ["bolničar","negoval","zdravstven","oskrbovalec starejših","dom starejših","fizioterap"]),
+    ("Gostinstvo", ["kuhar","kuhinj","natakar","strežb","strežnik","delilec hrane","picopek","slaščičar","barist",
+                    "gostin","točaj","kuharsk","pomivalec","restavracij","zajtrk","catering","hostes"]),
+    ("Čiščenje", ["čistil","čiščenj","sobaric","snažil","perilo","pralnic","higien"]),
+    ("Skladišče", ["skladišč","komisionar","manipulant","pakirec","pakiral","pakiranj","embalaž","viličarist",
+                   "priprava naročil","sortirec","sortiranj","logist","pošiljk"]),
+    ("Transport in dostava", ["voznik","voznica","dostav","šofer","kurir","prevoz","pismonoša","pošti",
+                              "disponent","spremljevalec vozila"]),
+    ("Trgovina", ["prodajal","blagajni","trgovin","hipermarket","supermarket","market","polnilec polic",
+                  "trgovec","mesar","cvetličar","prodajno mesto","poslovne enote","trafik"]),
+    ("Prodaja in svetovanje", ["komercialist","zastopnik","sales","account","prodajn","prodaji","prodajo",
+                               "svetovalec za prodajo","skrbnik ključnih kupcev","business development"]),
+    ("Klicni center in podpora strankam", ["klicnem centru","klicni center","podporo strankam","podpora strankam",
+                                           "delo s strankami","telefonist","service desk","podporo uporabnikom",
+                                           "rezervacijsk","customer support"]),
+    ("Finance in zavarovalništvo", ["bančni","banč","zavarovaln","finanč","škodn","cenilec","saldakont",
+                                    "kalkulant","likvidator","obračun"]),
+    ("Proizvodnja", ["proizvodn","operater","montaž","monter","strojnik","na stroju","obdelav","linij","livar",
+                     "šivilj","tekstil","kovinar","preddelavec","orodjar","mizar","tiskar","upravljalec",
+                     "finišer","klepar","pleskar","živilec","peskar","delavec","tehnolog","sestavlja"]),
+    ("Vzdrževanje in servis", ["vzdrževal","serviser","servis","tehnik","inštalater","instalater","mehatronik",
+                               "sprejemnik","pralec vozil","elektrikar"]),
+    ("Gradbeništvo", ["gradben","gradbiš","asfalter","fasader","tesarsk","betoner","cestn"]),
+    ("IT in razvoj", ["developer","software","tester","informacijsk","informatik","web ","razvijal","programer",
+                      "sistemsk","aplikativ"]),
+    ("Administracija", ["referent","administra","tajni","recepcij","asistent","sekretar","kadrov","nabav",
+                        "planer","analitik","kontrolor","koordinator","dokument","arhivar"]),
+]
+DEFAULT_CATEGORY = "Drugo"
+
+def categorize(title: str) -> str:
+    t = " " + (title or "").lower() + " "
+    for name, keys in CATEGORIES:
+        if any(k in t for k in keys):
+            return name
+    return DEFAULT_CATEGORY
 
 
 # ---------------------------------------------------------------------------
@@ -167,6 +358,7 @@ def parse_detail_kariera(url: str) -> dict:
         "datum_objave": field("Datum objave"),
         "rok_prijave": field("Rok prijave"),
         "full_text": main_text,
+        "stopnja": parse_stopnja(main_text),
     }
 
 
@@ -233,6 +425,29 @@ def mojedelo_town_ids() -> list[tuple[str, str]]:
             if matches_city(town["translation"]):
                 found[town["id"]] = town["translation"]
     return sorted(found.items(), key=lambda kv: kv[1])
+
+
+_mojedelo_edu: dict[str, float] | None = None
+
+
+def mojedelo_education_levels() -> dict[str, float]:
+    """id уровня образования → номер ступени, из справочника самого MojeDelo.
+
+    В самих вакансиях метка приходит без римского префикса («dokončana
+    gimnazija …»), а в справочнике он есть («V. - dokončana gimnazija …»),
+    поэтому сопоставляем по id, а номер берём из префикса. Так маппинг
+    не сломается, если MojeDelo переименует уровень.
+    """
+    global _mojedelo_edu
+    if _mojedelo_edu is None:
+        roman = {"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6, "VII": 7, "VIII": 8}
+        _mojedelo_edu = {}
+        for item in mojedelo_api("/taxonomy/education-levels")["items"]:
+            m = re.match(r"\s*(VIII|VII|VI|V|IV|III|II|I)\.?(?:/([12]))?\s*-", item["translation"])
+            if m:
+                sub = int(m.group(2)) / 10 if m.group(2) else 0
+                _mojedelo_edu[item["id"]] = roman[m.group(1)] + sub
+    return _mojedelo_edu
 
 
 def mojedelo_slug(title: str) -> str:
@@ -309,6 +524,12 @@ def parse_detail_mojedelo(url: str) -> dict:
                     "aboutTheCompany", "waysToApply")
     ]
 
+    # educationLevels — список ДОПУСТИМЫХ уровней, поэтому берём минимальный:
+    # вакансия подходит, если среди допустимых есть V или ниже.
+    levels = mojedelo_education_levels()
+    got = [levels.get(v.get("id")) for v in (d.get("educationLevels") or []) if isinstance(v, dict)]
+    got = [g for g in got if g is not None]
+
     return {
         "title": d.get("title") or "",
         "regija": regions[0]["translation"] if regions else "",
@@ -316,6 +537,7 @@ def parse_detail_mojedelo(url: str) -> dict:
         "datum_objave": (d.get("startDate") or "")[:10],
         "rok_prijave": (d.get("endDate") or "")[:10],
         "full_text": "\n".join(p for p in parts if p),
+        "stopnja": min(got) if got else None,
     }
 
 
@@ -331,6 +553,18 @@ SOURCES = {
 def matches_city(kraj: str) -> bool:
     k = kraj.lower()
     return any(city in k for city in CITY_FILTER)
+
+
+def matches_title(title: str) -> bool:
+    t = (title or "").lower()
+    if any(g in t for g in TITLE_EXCLUDE_GUARD):
+        return True
+    return not any(k in t for k in TITLE_EXCLUDE)
+
+
+def matches_education(stopnja) -> bool:
+    """Не найденная или неоднозначная ступень — не повод резать."""
+    return stopnja is None or stopnja <= MAX_STOPNJA
 
 
 def matches_keywords(full_text: str) -> bool:
@@ -399,6 +633,8 @@ def run():
     checked = 0
     empty_kraj = 0
     excluded_by_keyword = 0
+    excluded_by_title = 0
+    excluded_by_stopnja = 0
 
     for job_id, url in to_check:
         source = job_id.split(":", 1)[0]
@@ -422,7 +658,14 @@ def run():
         if not matches_keywords(detail["full_text"]):
             excluded_by_keyword += 1
             continue
+        if not matches_title(detail["title"]):
+            excluded_by_title += 1
+            continue
+        if not matches_education(detail.get("stopnja")):
+            excluded_by_stopnja += 1
+            continue
 
+        text = f"{detail['title']}\n{detail['full_text']}"
         record = {
             "id": job_id,
             "source": source,
@@ -432,12 +675,17 @@ def run():
             "regija": detail["regija"],
             "datum_objave": detail["datum_objave"],
             "rok_prijave": detail["rok_prijave"],
+            "kategorija": categorize(detail["title"]),
+            "placa": find_salary(text),
+            "izmene": find_shift(text),
+            "izpit": find_license(text),
+            "stopnja": detail.get("stopnja"),
             "active": True,
             "first_seen": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         }
         store["jobs"][job_id] = record
         new_jobs.append(record)
-        print(f"  + [{source}] {record['title']} — {kraj}")
+        print(f"  + [{source}] {record['title']} — {kraj} [{record['kategorija']}]")
 
     # Гасим только вакансии тех источников, чей список мы правда получили.
     for jid, job in store["jobs"].items():
@@ -460,13 +708,15 @@ def run():
     per_source = ", ".join(
         f"{src}: {sum(1 for j in new_jobs if j['source'] == src)}" for src in SOURCES
     )
+    dropped = (f"стоп-слова: {excluded_by_keyword}, названия: {excluded_by_title}, "
+               f"ступень образования: {excluded_by_stopnja}")
     LAST_RUN_FILE.write_text(
-        f"{now}\nпроверено новых: {checked}, отброшено по стоп-словам: {excluded_by_keyword}, "
+        f"{now}\nпроверено новых: {checked}, отброшено ({dropped}), "
         f"подошло: {len(new_jobs)} ({per_source}), активных всего: {active_total}\n",
         encoding="utf-8",
     )
     print(f"Итог: новых подходящих вакансий {len(new_jobs)} ({per_source}); "
-          f"отброшено по стоп-словам: {excluded_by_keyword}; активных всего: {active_total}")
+          f"отброшено — {dropped}; активных всего: {active_total}")
 
 
 if __name__ == "__main__":

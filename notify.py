@@ -66,13 +66,28 @@ def chunks(lines: list[str], limit: int = TELEGRAM_LIMIT):
 
 SOURCE_LABELS = {"kariera": "Kariera", "mojedelo": "MojeDelo"}
 
+DEFAULT_CATEGORY = "Drugo"
+
 
 def format_job(j: dict) -> str:
     title = html.escape(j.get("title") or "(без названия)")
-    kraj = html.escape(j.get("kraj") or "")
     source = SOURCE_LABELS.get(j.get("source"), j.get("source") or "")
     tag = f"[{html.escape(source)}] " if source else ""
-    return f'• {tag}<a href="{j["url"]}">{title}</a> · {kraj}'
+    # Показываем только то, что реально нашлось, — без «не указано».
+    details = [j.get("kraj"), j.get("placa"), j.get("izmene"), j.get("izpit")]
+    tail = "".join(f" · {html.escape(d)}" for d in details if d)
+    return f'• {tag}<a href="{j["url"]}">{title}</a>{tail}'
+
+
+def group_by_category(jobs: list[dict]) -> list[tuple[str, list[dict]]]:
+    """Группы по убыванию количества, «Drugo» всегда последней."""
+    groups: dict[str, list[dict]] = {}
+    for j in jobs:
+        groups.setdefault(j.get("kategorija") or DEFAULT_CATEGORY, []).append(j)
+    return sorted(
+        groups.items(),
+        key=lambda kv: (kv[0] == DEFAULT_CATEGORY, -len(kv[1]), kv[0]),
+    )
 
 
 def main():
@@ -94,8 +109,11 @@ def main():
         print("Новых вакансий нет.")
         return
 
-    lines = [f"<b>Новые вакансии: {len(jobs)}</b>", ""]
-    lines += [format_job(j) for j in jobs]
+    lines = [f"<b>Новые вакансии: {len(jobs)}</b>"]
+    for category, items in group_by_category(jobs):
+        lines.append("")
+        lines.append(f"<b>{html.escape(category)} ({len(items)})</b>")
+        lines += [format_job(j) for j in items]
 
     for n, part in enumerate(chunks(lines)):
         if n:
