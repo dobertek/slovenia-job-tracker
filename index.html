@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Vič Job Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+<style>
+  html, body { margin:0; padding:0; height:100%; font-family: system-ui, -apple-system, sans-serif; }
+  #map { height:100%; width:100%; }
+  .panel {
+    position:absolute; top:10px; right:10px; z-index:1000;
+    background:#fff; padding:10px 14px; border-radius:8px;
+    box-shadow:0 1px 4px rgba(0,0,0,.3); font-size:13px; line-height:1.6; max-width:260px;
+  }
+  .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+  .muted { color:#666; font-size:12px; }
+  .popup b { display:block; margin-bottom:4px; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<div class="panel">
+  <div><span class="dot" style="background:#e74c3c"></span>Рядом с Vič: <b id="cnt-vic">–</b></div>
+  <div><span class="dot" style="background:#3498db"></span>Ljubljana, район не указан: <b id="cnt-rest">–</b></div>
+  <div class="muted" id="updated"></div>
+  <div class="muted" id="status"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const map = L.map('map').setView([46.0447, 14.4681], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+const cluster = L.markerClusterGroup({ showCoverageOnHover: false, spiderfyOnMaxZoom: true, maxClusterRadius: 40 });
+map.addLayer(cluster);
+
+fetch('data/jobs.json?' + Date.now())
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(store => {
+    const jobs = Object.values(store.jobs || {}).filter(j => j.active !== false);
+    let vic = 0, rest = 0;
+    jobs.forEach(j => {
+      const color = j.in_vic ? '#e74c3c' : '#3498db';
+      j.in_vic ? vic++ : rest++;
+      const m = L.circleMarker([j.lat, j.lon], {
+        radius: 8, color, fillColor: color, fillOpacity: 0.85, weight: 1
+      });
+      m.bindPopup(
+        `<div class="popup"><b>${esc(j.title)}</b>` +
+        `${esc(j.kraj)}${j.approx ? ' <span class="muted">(положение приблизительное)</span>' : ''}<br>` +
+        `<span class="muted">Опубликовано ${esc(j.datum_objave)} · до ${esc(j.rok_prijave)}</span><br>` +
+        `<a href="${esc(j.url)}" target="_blank" rel="noopener">Открыть вакансию</a></div>`
+      );
+      cluster.addLayer(m);
+    });
+    document.getElementById('cnt-vic').textContent = vic;
+    document.getElementById('cnt-rest').textContent = rest;
+    if (!jobs.length) document.getElementById('status').textContent = 'Пока нет данных — запусти workflow в GitHub Actions.';
+  })
+  .catch(() => { document.getElementById('status').textContent = 'Не удалось загрузить data/jobs.json.'; });
+
+fetch('data/last_run.txt?' + Date.now())
+  .then(r => r.ok ? r.text() : '')
+  .then(t => {
+    const first = t.split('\n')[0];
+    if (first) document.getElementById('updated').textContent = 'Обновлено: ' + first;
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>
