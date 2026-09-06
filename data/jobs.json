@@ -3601,7 +3601,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:ac121a94-d17c-430f-9b0a-2182ac667ed1": {
@@ -3720,7 +3720,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:3cd9a7cc-38a9-4fe6-8c26-78649d05c304": {
@@ -4655,7 +4655,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:ad06a9c0-9697-4203-8a65-864a0b8686eb": {
@@ -8548,7 +8548,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:3faa4a8c-700b-4fd3-906d-8e2763a43338": {
@@ -8565,7 +8565,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:a477431a-b907-4413-bbcd-057b4d5fd2f7": {
@@ -8582,7 +8582,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:53440d87-519d-42e4-95b3-9e62c99bc849": {
@@ -8616,7 +8616,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:ed0e5ea0-584c-45e3-a399-25251f817447": {
@@ -8633,7 +8633,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:196a3db6-354e-4d07-9c9d-caabd1ce907e": {
@@ -8650,7 +8650,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:136c09c3-02aa-4d28-8291-ee7a0bc5173a": {
@@ -8667,7 +8667,7 @@
       "izmene": "večizmensko",
       "izpit": "",
       "stopnja": 2,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:4d16aca9-16c0-408c-a13d-bc250794d322": {
@@ -8684,7 +8684,7 @@
       "izmene": "2 izmeni",
       "izpit": "",
       "stopnja": 2,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:c2f79409-38ab-478a-a59a-2e4c00021866": {
@@ -8701,7 +8701,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:5d759775-17db-440a-98ac-219bd3ef9094": {
@@ -8735,7 +8735,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:4880a10f-381b-4c20-92ed-caf3d1f50b4f": {
@@ -9383,6 +9383,23 @@
       "stopnja": 3,
       "active": true,
       "first_seen": "2026-09-05"
+    },
+    "mojedelo:58e5c530-45c7-4ca8-8f34-f9f2293f508d": {
+      "id": "mojedelo:58e5c530-45c7-4ca8-8f34-f9f2293f508d",
+      "source": "mojedelo",
+      "url": "https://www.mojedelo.com/oglas/komisionar-m-z-v-ljubljani/58e5c530-45c7-4ca8-8f34-f9f2293f508d",
+      "title": "Komisionar (m/ž) v Ljubljani",
+      "kraj": "Ljubljana",
+      "regija": "Osrednjeslovenska",
+      "datum_objave": "2026-09-05",
+      "rok_prijave": "2026-09-13",
+      "kategorija": "Skladišče",
+      "placa": "",
+      "izmene": "",
+      "izpit": "",
+      "stopnja": 3,
+      "active": true,
+      "first_seen": "2026-09-06"
     }
   },
   "seen": [
@@ -9936,6 +9953,7 @@
     "mojedelo:57e95d94-e95f-4366-b1c9-6165883acc6f",
     "mojedelo:589b908f-effa-4e65-b4d2-f366eac9f88e",
     "mojedelo:58a72bc3-315e-4550-8860-40729cb97e2e",
+    "mojedelo:58e5c530-45c7-4ca8-8f34-f9f2293f508d",
     "mojedelo:59299e85-d4d9-42b1-8519-f9c98ecfcbc1",
     "mojedelo:59410e54-ca01-489e-bdbc-88923768c773",
     "mojedelo:598326f0-b781-4a7c-8590-d13acc8a71f5",
