@@ -745,7 +745,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:386bcb4a-c0e8-40ec-8183-aea99d223ff8": {
@@ -847,7 +847,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:8dead86b-fd62-470d-923f-172ceb92f56a": {
@@ -1765,7 +1765,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:ee860b7e-b38b-436a-b03b-28b6ace24077": {
@@ -1799,7 +1799,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-05"
     },
     "mojedelo:54db3a37-6fea-4e72-826f-c44cdfe3d268": {
@@ -16555,7 +16555,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-22"
     },
     "mojedelo:7a88fddf-c16d-4338-8c70-fb7693b3b075": {
@@ -17711,7 +17711,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-24"
     },
     "mojedelo:60ef3d29-5029-494d-9f25-a9d07e9f4440": {
@@ -21623,6 +21623,23 @@
       "stopnja": 3,
       "active": true,
       "first_seen": "2026-10-03"
+    },
+    "mojedelo:395df457-98e2-4346-bd0b-2d2adc3dfc1e": {
+      "id": "mojedelo:395df457-98e2-4346-bd0b-2d2adc3dfc1e",
+      "source": "mojedelo",
+      "url": "https://www.mojedelo.com/oglas/pomocnik-v-kuhinji-m-z-ljubljana/395df457-98e2-4346-bd0b-2d2adc3dfc1e",
+      "title": "Pomočnik v kuhinji, m/ž, Ljubljana",
+      "kraj": "Ljubljana",
+      "regija": "Osrednjeslovenska",
+      "datum_objave": "2026-10-03",
+      "rok_prijave": "2026-10-30",
+      "kategorija": "Gostinstvo",
+      "placa": "",
+      "izmene": "",
+      "izpit": "kat. B",
+      "stopnja": 1,
+      "active": true,
+      "first_seen": "2026-10-04"
     }
   },
   "seen": [
@@ -22444,6 +22461,7 @@
     "mojedelo:394d2b76-f6bc-4ac9-a9bf-75c3a6936031",
     "mojedelo:395360d9-785b-4be4-966a-c5c5434c0f67",
     "mojedelo:3958bf21-df2c-4e65-96d5-da8bb99e6675",
+    "mojedelo:395df457-98e2-4346-bd0b-2d2adc3dfc1e",
     "mojedelo:397e1305-3ead-47c3-9864-a502d41e9f08",
     "mojedelo:39890e5e-2c05-4a32-98ec-97011e48ac92",
     "mojedelo:398b2fe0-7ca4-4b9c-9f86-2e4e80e200e2",
