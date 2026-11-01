@@ -20771,7 +20771,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-01"
     },
     "mojedelo:cc894b43-26f1-4dbb-824b-340b941b9a95": {
@@ -20788,7 +20788,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-01"
     },
     "mojedelo:9fa0cd55-0e16-434b-a2a1-fbed5c3f4bf4": {
@@ -20805,7 +20805,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-01"
     },
     "mojedelo:a19ea6b9-4c88-4b7a-8b48-f78b0c231401": {
@@ -20907,7 +20907,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-01"
     },
     "mojedelo:b0704f1d-c041-4a48-ba87-b25407b076dc": {
@@ -20958,7 +20958,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-01"
     },
     "mojedelo:6027a457-63da-4b77-9192-93875199f153": {
@@ -21145,7 +21145,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-02"
     },
     "mojedelo:987bac94-7a56-4fbd-9931-72f4aa1fe7ec": {
@@ -21179,7 +21179,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-02"
     },
     "mojedelo:b965077c-70a2-4b47-9e7f-7e3179d0037b": {
@@ -21366,7 +21366,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-02"
     },
     "mojedelo:08c0f232-9efe-4ba5-b174-f92d16002772": {
@@ -21383,7 +21383,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-02"
     },
     "mojedelo:67f9405a-effc-48ad-82ee-3610a8956528": {
@@ -21400,7 +21400,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-02"
     },
     "mojedelo:36a72977-ae01-4105-87ed-fd7709ae5c4d": {
@@ -21417,7 +21417,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-02"
     },
     "mojedelo:f6a43b40-6f10-410e-a2fe-df0fa9a2e858": {
@@ -21536,7 +21536,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-02"
     },
     "mojedelo:5055e17b-9478-43d3-a30d-a13e393710f0": {
@@ -21774,7 +21774,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-05"
     },
     "mojedelo:00446734-7eae-478b-acf2-9deefa5fa837": {
@@ -22182,7 +22182,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-05"
     },
     "mojedelo:ae2f2e55-7f7d-4a4f-97d8-ece04ef5923d": {
@@ -22216,7 +22216,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-05"
     },
     "mojedelo:28462d4c-6b9a-4d22-bcc0-59c96a58ee74": {
@@ -22233,7 +22233,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-05"
     },
     "mojedelo:113d16d2-4b94-45f3-a13d-57eadeb15e96": {
@@ -22250,7 +22250,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-05"
     },
     "mojedelo:92ccc077-e3b3-4f33-b743-3756a42d9d35": {
@@ -22318,7 +22318,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-05"
     },
     "mojedelo:4f2bb9f7-ff61-4f14-abdf-58e3466dc8ba": {
@@ -24664,7 +24664,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-12"
     },
     "mojedelo:ba10bfbd-0095-4184-9495-3da2696809af": {
@@ -24715,7 +24715,7 @@
       "izmene": "2 izmeni",
       "izpit": "",
       "stopnja": 2,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-12"
     },
     "mojedelo:7fbbd73d-4d6b-495c-944f-fc5fc165228e": {
@@ -26262,7 +26262,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-15"
     },
     "mojedelo:0ea17e31-2d24-4f7a-9a53-1ca5d1669b7f": {
@@ -26398,7 +26398,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-15"
     },
     "mojedelo:626c44a1-b71b-494b-bfb8-3c22f8f919a5": {
@@ -27537,7 +27537,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-19"
     },
     "mojedelo:6e480563-7172-4187-9bfa-ae5fdb99ee44": {
@@ -27571,7 +27571,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-19"
     },
     "mojedelo:9e1f462d-9343-4ab3-a73d-d822e0c18078": {
@@ -27605,7 +27605,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-19"
     },
     "mojedelo:0ad1c56d-60d0-4106-8f69-918507168f9d": {
@@ -27622,7 +27622,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-19"
     },
     "mojedelo:52ceb28b-e00a-427a-bf3a-77adfdea6938": {
@@ -29900,7 +29900,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-22"
     },
     "mojedelo:d34d4173-946f-448d-8076-b4fd26ab330a": {
@@ -30495,7 +30495,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-23"
     },
     "mojedelo:af6ce9de-c7b2-4188-b4dd-f58eb1ee88fc": {
@@ -31073,7 +31073,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-26"
     },
     "mojedelo:c5847f16-21d6-418a-8d5d-c7812787a7d7": {
@@ -33523,6 +33523,40 @@
       "stopnja": 5,
       "active": true,
       "first_seen": "2026-10-31"
+    },
+    "mojedelo:68f9385b-f2d7-4794-ad09-4a2ce6e822d1": {
+      "id": "mojedelo:68f9385b-f2d7-4794-ad09-4a2ce6e822d1",
+      "source": "mojedelo",
+      "url": "https://www.mojedelo.com/oglas/strokovni-sodelavec-cenilec-v-oddelku-avtomobilskih-skod-m-z-ljubljana/68f9385b-f2d7-4794-ad09-4a2ce6e822d1",
+      "title": "Strokovni sodelavec – cenilec v oddelku avtomobilskih škod (m/ž) Ljubljana",
+      "kraj": "Ljubljana",
+      "regija": "Osrednjeslovenska",
+      "datum_objave": "2026-10-31",
+      "rok_prijave": "2026-11-15",
+      "kategorija": "Finance in zavarovalništvo",
+      "placa": "",
+      "izmene": "",
+      "izpit": "",
+      "stopnja": 4,
+      "active": true,
+      "first_seen": "2026-11-01"
+    },
+    "mojedelo:7fa5d5d4-1f7d-4825-b2a8-8804e064a532": {
+      "id": "mojedelo:7fa5d5d4-1f7d-4825-b2a8-8804e064a532",
+      "source": "mojedelo",
+      "url": "https://www.mojedelo.com/oglas/referent-za-prodajo-vozil/7fa5d5d4-1f7d-4825-b2a8-8804e064a532",
+      "title": "Referent za prodajo vozil",
+      "kraj": "Ljubljana",
+      "regija": "Osrednjeslovenska",
+      "datum_objave": "2026-10-31",
+      "rok_prijave": "2026-11-30",
+      "kategorija": "Prodaja in svetovanje",
+      "placa": "",
+      "izmene": "",
+      "izpit": "kat. B",
+      "stopnja": 4,
+      "active": true,
+      "first_seen": "2026-11-01"
     }
   },
   "seen": [
@@ -35454,6 +35488,7 @@
     "mojedelo:68dc0b71-ecf4-46a6-a509-84f044cde6a9",
     "mojedelo:68e002d9-63a8-4a08-9a4f-52d03f1cfc42",
     "mojedelo:68f37759-7122-46d1-b3a0-d86340ecbd77",
+    "mojedelo:68f9385b-f2d7-4794-ad09-4a2ce6e822d1",
     "mojedelo:6907b5e6-7c77-481f-9810-99df96b5ef91",
     "mojedelo:6915bb38-d4a6-48a4-80f5-a8b0e531de9a",
     "mojedelo:691780c4-c3f5-4800-9934-db97fd73eb09",
@@ -35829,6 +35864,7 @@
     "mojedelo:7f8ea5e4-53e3-4ef9-ad82-131e86936fcc",
     "mojedelo:7f986b75-ed65-4291-acc7-8eae1f957851",
     "mojedelo:7fa0a5a6-c75e-4fee-bacd-2794de506ad0",
+    "mojedelo:7fa5d5d4-1f7d-4825-b2a8-8804e064a532",
     "mojedelo:7fa9d3f1-0966-4814-b632-1347aff6b264",
     "mojedelo:7fbbd73d-4d6b-495c-944f-fc5fc165228e",
     "mojedelo:7fc3282f-c4ab-4176-8b04-9c997af57895",
