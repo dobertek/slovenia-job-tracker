@@ -26109,7 +26109,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-15"
     },
     "mojedelo:6915bb38-d4a6-48a4-80f5-a8b0e531de9a": {
@@ -26143,7 +26143,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 2,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-15"
     },
     "mojedelo:6eaa304f-564d-40ae-8a5b-4295b99e6c56": {
@@ -26789,7 +26789,7 @@
       "izmene": "",
       "izpit": "kat. C",
       "stopnja": 1,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-16"
     },
     "mojedelo:8ee27d81-76a5-4cf0-8f24-f3037531f4a5": {
@@ -26993,7 +26993,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-16"
     },
     "mojedelo:d326ecba-2c01-43fe-a5d5-c9225fc94611": {
@@ -34048,7 +34048,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-02"
     },
     "mojedelo:ce7a4aa9-e3ce-4c5d-bad9-95a9fdaa51ad": {
@@ -34881,7 +34881,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-04"
     },
     "mojedelo:53dcbfcc-f93c-40a1-8e36-67f3b50bf9f4": {
@@ -34898,7 +34898,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-04"
     },
     "mojedelo:006ad18d-27b0-4d93-a382-c147173f18d1": {
@@ -36020,7 +36020,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-06"
     },
     "mojedelo:534f39e7-5539-4f4a-a574-8c8ca1eb2a6e": {
@@ -36122,7 +36122,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-06"
     },
     "mojedelo:3556aa08-b06d-4bbb-8d9b-54e80799314b": {
@@ -39031,6 +39031,23 @@
       "stopnja": 3,
       "active": true,
       "first_seen": "2026-11-13"
+    },
+    "mojedelo:6b4e64e5-0eeb-4d31-9de6-c19f1602efa9": {
+      "id": "mojedelo:6b4e64e5-0eeb-4d31-9de6-c19f1602efa9",
+      "source": "mojedelo",
+      "url": "https://www.mojedelo.com/oglas/kuharski-pomocnik-m-z-z-izkusnjami-ali-zacetnik/6b4e64e5-0eeb-4d31-9de6-c19f1602efa9",
+      "title": "Kuharski pomočnik (m/ž) z izkušnjami ali začetnik",
+      "kraj": "Ljubljana",
+      "regija": "Osrednjeslovenska",
+      "datum_objave": "2026-11-13",
+      "rok_prijave": "2026-12-06",
+      "kategorija": "Gostinstvo",
+      "placa": "",
+      "izmene": "2 izmeni",
+      "izpit": "",
+      "stopnja": 2,
+      "active": true,
+      "first_seen": "2026-11-14"
     }
   },
   "seen": [
@@ -39282,6 +39299,7 @@
     "kariera:kariec2ba1ed0ebd4420a784eaf14cde073c",
     "kariera:kariec5d5f7e10e7420aa43404ba16a205a9",
     "kariera:karied74ddf381e64469a8c6584094ed7271",
+    "kariera:kariee6d121446b540a7936880da8c9b7ea2",
     "kariera:karief1413e80a344d02a7b1c0b90c7cdf64",
     "kariera:karief23857c5fca42ddaff809746d50cbce",
     "kariera:kariefccb386c7ce4b8d90304b055478bcfb",
@@ -41324,6 +41342,7 @@
     "mojedelo:6b21865c-b76a-42c6-8e4c-f9cc2d9e0afd",
     "mojedelo:6b310f83-33a3-48a1-8203-cc20243e358f",
     "mojedelo:6b4318dd-5262-41c8-b1de-a9deac09778f",
+    "mojedelo:6b4e64e5-0eeb-4d31-9de6-c19f1602efa9",
     "mojedelo:6b5550d2-3196-4f32-8587-83b118707b86",
     "mojedelo:6b5a7c49-78d1-4ff7-aa47-c54fb65d3599",
     "mojedelo:6b67d694-b369-4ed1-9cf3-91b34619a929",
