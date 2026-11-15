@@ -11863,7 +11863,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-10"
     },
     "mojedelo:c6d260af-ce4b-43f1-bb82-a16c67d52088": {
@@ -13648,7 +13648,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-09-14"
     },
     "mojedelo:9708544e-1330-4992-a74d-88050a84e4e4": {
@@ -26381,7 +26381,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-15"
     },
     "mojedelo:bfd99eb0-1d20-4237-a4f2-865051961b8f": {
@@ -26551,7 +26551,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-16"
     },
     "mojedelo:dffcb3ae-85ad-4746-922e-2b7646cf96b9": {
@@ -26619,7 +26619,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-16"
     },
     "mojedelo:6602b2cc-ba34-4382-97d9-afd6a20ad6ef": {
@@ -27044,7 +27044,7 @@
       "izmene": "1 izmena",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-16"
     },
     "mojedelo:69ae4b82-df59-4223-95df-138df2e8dc8f": {
@@ -27095,7 +27095,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-17"
     },
     "mojedelo:7250dcb3-f295-470e-bc2d-6cd62c78ab4f": {
@@ -27129,7 +27129,7 @@
       "izmene": "2 izmeni",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-17"
     },
     "mojedelo:ae60c300-c546-413b-a577-a620d0b55469": {
@@ -30444,7 +30444,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-23"
     },
     "mojedelo:cc001745-d7d6-4b30-b069-ede5d9c84aa4": {
@@ -35765,7 +35765,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-05"
     },
     "mojedelo:da532703-042b-44b0-b7de-4e22afc2022f": {
@@ -37193,7 +37193,7 @@
       "izmene": "",
       "izpit": "kat. B",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-10"
     },
     "mojedelo:a064cbb8-b6ea-4cf5-8f5a-4b10a9bcd841": {
