@@ -32501,7 +32501,7 @@
       "izmene": "3 izmene",
       "izpit": "kat. B",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-29"
     },
     "mojedelo:10ab54cf-3758-4605-b984-bb2a8d43b4f3": {
@@ -32518,7 +32518,7 @@
       "izmene": "",
       "izpit": "kat. C",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-29"
     },
     "mojedelo:808af066-3a4a-4380-84a5-0b7fce823b90": {
@@ -32569,7 +32569,7 @@
       "izmene": "",
       "izpit": "kat. C",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-29"
     },
     "mojedelo:4f32d299-9144-4eb4-b5aa-deb4560d0ed2": {
@@ -32620,7 +32620,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-29"
     },
     "mojedelo:3f64f013-4d9c-4215-a42b-06fc5bc252ec": {
@@ -32637,7 +32637,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-29"
     },
     "mojedelo:c4d3590c-97a9-4825-a6b8-76e0c036706f": {
@@ -32654,7 +32654,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-29"
     },
     "mojedelo:fce127a4-176b-4e60-bcb3-c3a32650e8bc": {
@@ -32739,7 +32739,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 3,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-29"
     },
     "mojedelo:fdb4ce72-979d-43d3-a623-779c25762a6e": {
@@ -33317,7 +33317,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-30"
     },
     "mojedelo:320926e0-0146-4d16-a8a6-13da81fc3d1f": {
@@ -33385,7 +33385,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-30"
     },
     "mojedelo:03397102-366c-42db-b653-4c094e131b6b": {
@@ -33402,7 +33402,7 @@
       "izmene": "1 izmena",
       "izpit": "",
       "stopnja": 2,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-30"
     },
     "mojedelo:6e03a862-2194-4e62-9411-4c3408ca4efc": {
@@ -33470,7 +33470,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-10-31"
     },
     "mojedelo:4840e7b4-6fbe-4542-97fe-c9680dff2e61": {
@@ -35901,7 +35901,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-06"
     },
     "mojedelo:a7adb87d-9eb7-4230-8b3c-35d8be1897d8": {
@@ -39063,7 +39063,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-16"
     },
     "mojedelo:eaaa020a-b0af-49ff-adb4-ac922514c6ff": {
@@ -40066,7 +40066,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 5,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-17"
     },
     "mojedelo:4486705c-43a0-44b5-9f4c-7b92a9d2fafd": {
@@ -41426,7 +41426,7 @@
       "izmene": "2 izmeni",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-20"
     },
     "mojedelo:1f8c210d-992c-4dbf-a271-6a9f7deec095": {
@@ -41834,7 +41834,7 @@
       "izmene": "",
       "izpit": "",
       "stopnja": 4,
-      "active": true,
+      "active": false,
       "first_seen": "2026-11-20"
     },
     "mojedelo:9d718b98-2908-4812-9969-bd73fb918681": {
@@ -49879,6 +49879,7 @@
     "mojedelo:eb94bdf2-42d8-4f88-8285-888c622ba941",
     "mojedelo:eba389ee-bbc5-4310-81cc-9578fcbe6900",
     "mojedelo:ebb8a129-4f73-44e8-ad10-e2b16cd3dbc6",
+    "mojedelo:ebbb8e8c-b67f-4389-a9a2-73e14bc84e86",
     "mojedelo:ebbebad9-9724-435e-a782-5705e242a5d9",
     "mojedelo:ebc6e53c-fc21-43ff-a468-b1d778cdb9ed",
     "mojedelo:ebe49ebc-9d36-445a-bc52-d01932bdf162",
